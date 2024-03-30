@@ -6,15 +6,21 @@ import HomeScreen from './screens/HomeScreen';
 import TasksScreen from './screens/ItemScreen';
 import CameraScreen from './screens/CameraScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import CheckList from './screens/ChecklistScreen';
+import ItemScreen from './screens/ItemScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-  <Stack.Screen name="Camera" component={CameraScreen} options={{ headerShown: false }}/>
+    <Stack.Navigator >
+    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="Camera" component={CameraScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="TasksScreen" component={ItemScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="CheckList" component={CheckList} options={{ headerShown: false }}/>
+    
 </Stack.Navigator>
 
   );

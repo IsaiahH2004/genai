@@ -1,47 +1,41 @@
-import React from 'react';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ItemScreen = ({ navigation }) => {
+const CheckList = () => {
+    const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    
 
-  // Sample data for the list
+    // Sample data for the list
   const data = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-    { id: 4, name: 'Item 4' },
-    { id: 5, name: 'Item 5' },
+    { id: 1, name: 'Task 1' },
+    { id: 2, name: 'Task 2' },
+    { id: 3, name: 'Task 3' },
   ];
-
-  // Function to handle item press
-  const handleItemPress = () => {
-    // Navigate to the CheckList screen
-    navigation.navigate('CheckList'); // Assuming 'CheckList' is the name of your destination screen
-  };
 
   // Render function for each item in the list
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={handleItemPress}>
+    <TouchableOpacity style={styles.item}>
       <Text style={styles.text}>{item.name}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.disposeText}>Trash Items</Text>
-        <View style={styles.profileContainer}>
-          <Ionicons name="person-circle" size={40} color="#000" />
+        <View style={styles.header}>
+            <Text style={styles.disposeText}>Name</Text>
+            <View style={styles.profileContainer}>
+                <Ionicons name="person-circle" size={40} color="#000" />
+            </View>
         </View>
-      </View>
 
-      <FlatList
-      style={styles.list}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-      />
+        <FlatList
+            style={styles.list}
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+        />
       {/* <Text style={{color:"white"}}>Item Screen </Text> */}
       <StatusBar style="auto" />
     </View>
@@ -54,7 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#312244',
     padding: '10%',
   },
-  text: {
+  text:{
     color: "#ffffff",
   },
   list: {
@@ -86,6 +80,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  profileName: {
+    fontSize: 18,
+    marginRight: 8,
+  },
+  rightMostStep: {
+    width: 60,
+    height: 120,
+    backgroundColor: '#FFD700',
+  },
+  stepText: {
+    fontWeight: 'bold',
+  },
 });
 
-export default ItemScreen;
+export default  CheckList;
