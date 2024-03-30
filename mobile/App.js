@@ -36,8 +36,8 @@ function App() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Tasks" component={TasksScreen} />
+        <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }}/>
+        <Tab.Screen name="Tasks" component={TasksScreen} options={{ headerShown: false }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
