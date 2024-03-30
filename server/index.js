@@ -13,12 +13,17 @@ app.use(express.json());
 app.use(cors());
 
 // Image sent in body
-app.get("/steps/get", async (req, res) => {});
+app.post("/steps/get", async (req, res) => {
+  const {image} = await req.body;
+
+  console.log(await req.body)
+  res.send("")
+});
 
 // body: { name: "string" }
 app.post("/register", async (req, res) => {
   const { name } = await req.body;
-
+  console.log(name);
   if (!name) {
     return res.status(400).json({
       error: "Please send the name to register",
