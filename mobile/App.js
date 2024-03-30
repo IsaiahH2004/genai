@@ -2,9 +2,9 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen'; // Adjust the path as necessary
-import TasksScreen from './screens/ItemScreen'; // Adjust the path as necessary
-import CameraScreen from './screens/CameraScreen'; // Adjust the path as necessary
+import HomeScreen from './screens/HomeScreen';
+import TasksScreen from './screens/ItemScreen';
+import CameraScreen from './screens/CameraScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
