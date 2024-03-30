@@ -1,9 +1,11 @@
 {
   "name": "server",
+  "type": "module",
   "version": "1.0.0",
   "description": "backend server",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "test": "jest"
   },
   "repository": {
@@ -17,8 +19,10 @@
   },
   "homepage": "https://github.com/IsaiahH2004/genai#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongoose": "^8.2.4",
     "nodemon": "^3.1.0"
   }
 }
