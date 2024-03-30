@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { Camera } from 'expo-camera';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImageManipulator from 'expo-image-manipulator';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 const CameraScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -16,29 +17,41 @@ const cameraViewSize = screenWidth * 0.9;
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
 
   const takePicture = async () => {
+    console.log("here1");
     if (cameraRef.current) {
-      const options = { quality: 1, base64: true };
-      const data = await cameraRef.current.takePictureAsync(options);
+      console.log("here2");
+      try {
+        const options = { quality: 0.5, base64: true };
+        console.log("here3");
+        const data = await cameraRef.current.takePictureAsync(options);
+        console.log("here4");
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          data.uri,
+          [],
+          { compress: 1, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+        );
+        console.log(resizedImage);
 
-      const cropWidth = Math.min(data.width, data.height);
-      const cropHeight = cropWidth;
-      const cropOriginX = (data.width - cropWidth) / 2;
-      const cropOriginY = (data.height - cropHeight) / 2;
-
-      const resizedImage = await ImageManipulator.manipulateAsync(
-        data.uri,
-        [
-          { crop: { originX: cropOriginX, originY: cropOriginY, width: cropWidth, height: cropHeight } },
-        ],
-        { compress: 1, format: ImageManipulator.SaveFormat.JPEG, base64: true }
-      );
-
+        // Example of handling the base64 image data:
+        // console.log(resizedImage.base64);
+        
+        // Example POST request with fetch
+        fetch(`https://long-planets-think.loca.lt/register`, { // Make sure to replace YOUR_SERVER_URL with your actual server URL
+          method: "POST",
+          body: JSON.stringify({
+            name: "123456",
+          }),
+        });
+        console.log(`https://long-planets-think.loca.lt/register`);
+      } catch (error) {
+        console.log("Error", "Failed to take picture: " + error.message);
+      }
     }
   };
 
@@ -52,10 +65,11 @@ const cameraViewSize = screenWidth * 0.9;
   return (
     <View style={styles.container}>
       <View style={[styles.cameraContainer, { width: cameraViewSize, height: cameraViewSize }]}>
-        <Camera
-          style={StyleSheet.absoluteFill}
-          type={Camera.Constants.Type.back}
-        />
+      <Camera
+        ref={cameraRef}
+        style={[styles.cameraContainer, { width: cameraSizeWidth, height: cameraSizeHeight }]}
+        type={Camera.Constants.Type.back}
+      />
       </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -128,6 +142,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: 'center',
     margin: 20,
+  },
+  button:{
+    backgroundColor: "white",
   },
   buttonText: {
     fontSize: 14,
