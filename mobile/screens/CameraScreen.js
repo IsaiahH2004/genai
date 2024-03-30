@@ -38,17 +38,16 @@ const cameraViewSize = screenWidth * 0.9;
         );
         console.log(resizedImage);
 
-        // Example of handling the base64 image data:
-        // console.log(resizedImage.base64);
-        
-        // Example POST request with fetch
-        fetch(`https://long-planets-think.loca.lt/register`, { // Make sure to replace YOUR_SERVER_URL with your actual server URL
+        fetch(`https://long-planets-think.loca.lt/steps/get`, {
           method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            name: "123456",
+            image: resizedImage,
           }),
         });
-        console.log(`https://long-planets-think.loca.lt/register`);
+        console.log(`https://long-planets-think.loca.lt/steps/get`);
       } catch (error) {
         console.log("Error", "Failed to take picture: " + error.message);
       }
