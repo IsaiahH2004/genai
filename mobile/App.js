@@ -6,15 +6,21 @@ import HomeScreen from './screens/HomeScreen'; // Adjust the path as necessary
 import TasksScreen from './screens/ItemScreen'; // Adjust the path as necessary
 import CameraScreen from './screens/CameraScreen'; // Adjust the path as necessary
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import CheckList from './screens/ChecklistScreen';
+import ItemScreen from './screens/ItemScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-  <Stack.Screen name="Camera" component={CameraScreen} options={{ headerShown: false }}/>
+    <Stack.Navigator >
+    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="Camera" component={CameraScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="TasksScreen" component={ItemScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="CheckList" component={CheckList} options={{ headerShown: false }}/>
+    
 </Stack.Navigator>
 
   );
@@ -36,8 +42,8 @@ function App() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Tasks" component={TasksScreen} />
+        <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }}/>
+        <Tab.Screen name="Tasks" component={TasksScreen} options={{ headerShown: false }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
