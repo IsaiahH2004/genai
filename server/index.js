@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import mongoose, { isValidObjectId } from "mongoose";
 
-await mongoose.connect("mongodb://localhost:27017");
 dotenv.config();
+await mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017").then(() => {
+  console.log("connected to:", process.env.MONGO_URL || "mongodb://localhost:27017")
+});
 
 import { User, Item } from "./models/models.js";
 
@@ -14,10 +16,7 @@ app.use(cors());
 
 // Image sent in body
 app.post("/steps/get", async (req, res) => {
-  const {image} = await req.body;
-
-  console.log(await req.body)
-  res.send("")
+  const { image } = await req.body
 });
 
 // body: { name: "string" }
