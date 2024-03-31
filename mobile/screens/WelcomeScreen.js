@@ -27,7 +27,7 @@ const WelcomeScreen = ({ navigation }) => {
   const saveData = async () => {
     if (name !== "") {
       try {
-        const response = await fetch("http://localhost:8000/register", {
+        const response = await fetch("http://172.20.10.3:8000/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -34,8 +34,8 @@ function HomeTabNavigator() {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Tasks" component={TasksScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="Tasks" component={TasksScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 }
