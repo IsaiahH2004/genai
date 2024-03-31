@@ -3,21 +3,74 @@ import dotenv from "dotenv";
 import cors from "cors";
 import mongoose, { isValidObjectId } from "mongoose";
 
-await mongoose.connect("mongodb://localhost:27017");
 dotenv.config();
 
+await mongoose
+  .connect(process.env.MONGO_URL || "mongodb://localhost:27017")
+  .then(() => {
+    console.log(
+      "connected to:",
+      process.env.MONGO_URL || "mongodb://localhost:27017",
+    );
+  });
+
 import { User, Item } from "./models/models.js";
+import { VertexAI } from "@google-cloud/vertexai";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cors());
 
 // Image sent in body
 app.post("/steps/get", async (req, res) => {
-  const {image} = await req.body;
+  const { image, userId } = await req.body;
 
-  console.log(await req.body)
-  res.send("")
+  try {
+    const vertex_ai = new VertexAI({
+      project: process.env.PROJECT_ID,
+      location: "us-central1",
+    });
+    const generativeVisionModel = vertex_ai.getGenerativeModel({
+      model: "gemini-1.0-pro-vision",
+    });
+
+    const filePart = {
+      inline_data: { data: image.base64, mime_type: "image/jpeg" },
+    };
+    const textPart = {
+      text: "I am trying to trying to dispose of the item in this image in the most sustainable way. Please provide me with a very concise step by step procedure, where each step is delimited by a semicolon. Make the first thing step the name of object you see in the image.",
+    };
+    const request = {
+      contents: [{ role: "user", parts: [textPart, filePart] }],
+    };
+
+    const resp = await generativeVisionModel.generateContentStream(request);
+    const contentResponse = await resp.response;
+    const splitted =
+      contentResponse.candidates[0].content.parts[0].text.split(";");
+
+    const item = new Item({
+      name: splitted[0],
+      steps: splitted.slice(1).map((e) => {
+        return {
+          description: e.trim(),
+          isComplete: false
+        }
+      }),
+      userId: userId,
+    });
+    await item.save();
+
+    console.log(item);
+    res.json({
+      response: item._id,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({
+      error: "Failed to process image: " + e,
+    });
+  }
 });
 
 // body: { name: "string" }
