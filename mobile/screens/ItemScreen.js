@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -84,11 +84,13 @@ const ItemScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-        <ScrollView style={styles.list}
+        <ScrollView
+          style={styles.list}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> 
-          }>
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {loading ? (
             <ActivityIndicator color={"red"} size="large" />
           ) : (
@@ -160,9 +162,9 @@ const styles = StyleSheet.create({
     margin: 5,
     borderColor: "#3f3e41",
     borderRadius: 8,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
+    justifyContent: "center",
+    alignContent: "center",
+    alignSelf: "center",
   },
   header: {
     position: "absolute",
