@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   list: {
-    marginTop: "10%",
+    marginTop: "20%",
   },
   item: {
     backgroundColor: "#a29fe0",

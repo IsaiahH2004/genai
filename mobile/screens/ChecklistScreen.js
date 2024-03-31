@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   itemNameContainer: {
-    marginTop: 40,
+    marginTop: "20%",
     marginBottom: 10,
     alignItems: "center",
   },
