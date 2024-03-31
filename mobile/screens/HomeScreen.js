@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,14 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
   const [storedName, setStoredName] = useState("");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     const fetchLeaderboardData = async () => {
       try {
         const response = await fetch(
@@ -59,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
 
     fetchLeaderboardData();
     fetchCurrentUserData();
-  }, []);
+  }, []));
 
   useEffect(() => {
     const loadStoredName = async () => {
@@ -85,6 +86,7 @@ const HomeScreen = ({ navigation }) => {
     if (place === 3) return "black";
     return "white";
   };
+
 
   return (
     <SafeAreaView style={styles.container}>

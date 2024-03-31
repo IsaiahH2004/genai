@@ -68,6 +68,7 @@ const CameraScreen = ({ navigation }) => {
             userId: storedId,
           }),
         });
+        navigation.goBack(); 
       } catch (error) {
         console.log("Error", "Failed to take picture: " + error.message);
       }

@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,6 +19,14 @@ const ItemScreen = ({ route, navigation }) => {
   const [items, setItems] = useState([]);
   const [storedId, setStoredId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 200);
+  }, []);
 
   useEffect(() => {
     const loadStoredName = async () => {
@@ -61,7 +70,7 @@ const ItemScreen = ({ route, navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchItems();
-    }, [])
+    }, [storedId])
   );
 
   return (
@@ -75,7 +84,11 @@ const ItemScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-        <ScrollView style={styles.list}>
+        <ScrollView style={styles.list}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> 
+          }>
           {loading ? (
             <ActivityIndicator color={"red"} size="large" />
           ) : (
@@ -143,10 +156,13 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: "#a29fe0",
     padding: 20,
-    width: 300,
+    width: "80%",
     margin: 5,
     borderColor: "#3f3e41",
     borderRadius: 8,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
   },
   header: {
     position: "absolute",
