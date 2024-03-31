@@ -58,7 +58,6 @@ const CheckList = ({ route }) => {
   }, [id]);
 
   const toggleCheck = async (index) => {
-    // Only proceed if the current step is not checked
     if (!steps[index].checked) {
       const updatedSteps = steps.map((step, i) =>
         i === index ? { ...step, checked: !step.checked } : step
