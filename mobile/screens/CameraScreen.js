@@ -6,6 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const CameraScreen = ({ navigation }) => {
+  const [storedName, setStoredName] = useState('');
+  const [storedId, setStoredId] = useState('');
   const [hasPermission, setHasPermission] = useState(null);
   const cameraRef = useRef(null);
 
@@ -15,12 +17,30 @@ const cameraSizeHeight = screenWidth * 1.2;
 const cameraSize = screenWidth * 0.9;
 const cameraViewSize = screenWidth * 0.9;
 
+useEffect(() => {
+  // Function to load the stored name
+  const loadStoredNameAndId = async () => {
+    const name = await AsyncStorage.getItem("Name");
+    const id = await AsyncStorage.getItem("UserID");
+    if (name) {
+      setStoredName(name); // Update the state with the stored name
+    }
+    if (id) {
+      setStoredId(id); // Update the state with the stored name
+    }
+  };
+
+  loadStoredNameAndId();
+
+}, []);
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
+  
 
   const takePicture = async () => {
     console.log("here1");
@@ -45,6 +65,7 @@ const cameraViewSize = screenWidth * 0.9;
           },
           body: JSON.stringify({
             image: resizedImage,
+            userId: storedId,
           }),
         });
         console.log(`http://localhost:8000/steps/get`);
