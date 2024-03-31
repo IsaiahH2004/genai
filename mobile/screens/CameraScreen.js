@@ -37,8 +37,7 @@ const cameraViewSize = screenWidth * 0.9;
           { compress: 1, format: ImageManipulator.SaveFormat.JPEG, base64: true }
         );
         console.log(resizedImage);
-
-        fetch(`http://localhost:8000/steps/get`, {
+        fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/steps/get`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +46,6 @@ const cameraViewSize = screenWidth * 0.9;
             image: resizedImage,
           }),
         });
-        console.log(`http://localhost:8000/steps/get`);
       } catch (error) {
         console.log("Error", "Failed to take picture: " + error.message);
       }

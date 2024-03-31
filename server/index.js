@@ -2,22 +2,53 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose, { isValidObjectId } from "mongoose";
+import {
+  VertexAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google-cloud/vertexai";
 
-await mongoose.connect("mongodb://localhost:27017");
 dotenv.config();
+await mongoose
+  .connect(process.env.MONGO_URL || "mongodb://localhost:27017")
+  .then(() => {
+    console.log(
+      "connected to:",
+      process.env.MONGO_URL || "mongodb://localhost:27017",
+    );
+  });
 
 import { User, Item } from "./models/models.js";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cors());
 
 // Image sent in body
 app.post("/steps/get", async (req, res) => {
-  const {image} = await req.body;
+  const { image } = await req.body;
+  console.log(image)
 
-  console.log(await req.body)
-  res.send("")
+  const vertex_ai = new VertexAI({
+    project: process.env.PROJECT_ID,
+    location: "us-central1",
+  });
+  const generativeVisionModel = vertex_ai.getGenerativeModel({
+    model: "gemini-1.0-pro-vision",
+  });
+
+  const filePart = {
+    inline_data: { data: image.base64, mime_type: "image/jpeg" },
+  };
+  const textPart = { text: "I am trying to trying to dispose of the item in this image in the most sustainable way. Please provide me with a very concise step by step procedure to do this." };
+  const request = {
+    contents: [{ role: "user", parts: [textPart, filePart] }],
+  };
+  const resp = await generativeVisionModel.generateContentStream(request);
+  const contentResponse = await resp.response;
+  console.log(contentResponse.candidates[0].content.parts[0].text);
+
+  res.send("");
 });
 
 // body: { name: "string" }
