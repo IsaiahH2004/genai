@@ -28,10 +28,9 @@ const HomeScreen = ({ navigation }) => {
     // Fetch current user data
     const fetchCurrentUserData = async () => {
       const userId = await AsyncStorage.getItem("UserID");
-      console.log("hfhfushdfjknsdjkvbdsjkfbvjkefnbvjodnfbov");
       if (userId) {
         try {
-          const response = await fetch(`http://172.20.10.3:8000/info/6608d30ba335dede02765821`);
+          const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/info/${userId}`);
           const jsonResponse = await response.json();
           if (response.ok) {
             setCurrentUser(jsonResponse.response);
@@ -141,13 +140,13 @@ const HomeScreen = ({ navigation }) => {
 
           {/* List of users */}
           <View style={styles.listStyle}>
-            {leaderboardData.map((user, index) => (
-              <View key={user.place} style={[styles.userItem, { backgroundColor: getBackgroundColor(index + 1) }]}>
-                <Text style={[styles.place, { color: getTextColor(index + 1) }]}>{index + 1}</Text>
-                <Text style={[styles.userName, { color: getTextColor(index + 1) }]}>{user.name}</Text>
-                <Text style={[styles.userScore, { color: getTextColor(index + 1) }]}>{user.highScore} pts</Text>
-              </View>
-            ))}
+          {leaderboardData.map((user, index) => (
+  <View key={index} style={[styles.userItem, { backgroundColor: getBackgroundColor(index + 1) }]}>
+    <Text style={[styles.place, { color: getTextColor(index + 1) }]}>{index + 1}</Text>
+    <Text style={[styles.userName, { color: getTextColor(index + 1) }]}>{user.name}</Text>
+    <Text style={[styles.userScore, { color: getTextColor(index + 1) }]}>{user.highScore} pts</Text>
+  </View>
+))}
             {currentUser && (
               <View style={[styles.currUserItem, { backgroundColor: getBackgroundColor(currentUser.placement) }]}>
                 <Text style={[styles.place, { color: getTextColor(currentUser.placement) }]}>{currentUser.placement}</Text>
