@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image , SafeAreaView} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CrownImage from '../assets/realistic-vector-icon-golden-king-queen-crown-isolated-white-background_134830-2012.jpg.avif';
 
 const HomeScreen = ({ navigation }) => {
+  const [storedName, setStoredName] = useState('');
   const topTenUsers = new Array(10).fill({ name: 'Isaiah', score: 100 }).map((user, index) => ({
     ...user,
     score: user.score - (index * 10),
@@ -15,6 +17,18 @@ const HomeScreen = ({ navigation }) => {
     { name: 'Isaiah', score: 150 },
     { name: 'Isaiah', score: 100 },
   ];
+
+  useEffect(() => {
+    // Function to load the stored name
+    const loadStoredName = async () => {
+      const name = await AsyncStorage.getItem("Name");
+      if (name) {
+        setStoredName(name); // Update the state with the stored name
+      }
+    };
+
+    loadStoredName();
+  }, []);
 
 
   const getBackgroundColor = (place) => {
@@ -31,13 +45,27 @@ const HomeScreen = ({ navigation }) => {
     return 'white';
   };
 
+  const clearName = async () => {
+    try {
+      // Optional: Fetch the current name if you need to use it before clearing
+      await AsyncStorage.removeItem("Name");
+
+
+      // Set the stored name to null
+      
+    } catch (error) {
+      console.error("Failed to clear the name from storage", error);
+    }
+  };
+
   return (
+    <SafeAreaView  style={styles.container}>
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
       <View style={styles.header}>
       <Text style={styles.disposeText}>Dispose</Text>
         <View style={styles.profileContainer}>
-        <Text style={styles.profileName}>Isaiah</Text>
+        <Text style={styles.profileName}>{storedName}</Text>
           <Ionicons name="person-circle" size={40} color="white" />
         </View>
       </View>
@@ -86,11 +114,15 @@ const HomeScreen = ({ navigation }) => {
       </ScrollView>
       <TouchableOpacity
         style={styles.cameraButton}
-        onPress={() => navigation.navigate('Camera')}
+        onPress={async () => {
+          await clearName(); // Clear the name when the camera button is pressed
+          navigation.navigate('Camera'); // Then navigate to the Camera screen
+        }}
       >
         <Ionicons name="camera" size={30} color="#fff" />
       </TouchableOpacity>
     </View>
+    </SafeAreaView>
   );
 };
 
@@ -133,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: 20,
+      paddingHorizontal: 20,
     },
     disposeText: {
       fontSize: 24,
