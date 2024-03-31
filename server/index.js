@@ -25,6 +25,7 @@ app.use(cors());
 app.post("/steps/get", async (req, res) => {
   const { image, userId } = await req.body;
 
+  console.log("here", userId)
   try {
     const vertex_ai = new VertexAI({
       project: process.env.PROJECT_ID,
@@ -50,14 +51,15 @@ app.post("/steps/get", async (req, res) => {
       contentResponse.candidates[0].content.parts[0].text.split(";");
 
     const item = new Item({
-      name: splitted[0],
+      name: splitted[0].trim(),
       steps: splitted.slice(1).map((e) => {
         return {
           description: e.trim(),
-          isComplete: false
-        }
+          isComplete: false,
+        };
       }),
       userId: userId,
+      isComplete: false
     });
     await item.save();
 
@@ -233,6 +235,44 @@ app.get("/leaderboard/:N", async (req, res) => {
   } catch (e) {
     res.status(500).json({
       error: `Failed to get leaderboard with error: ${e}`,
+    });
+  }
+});
+
+app.get("/info/:userId", async (req, res) => {
+  const { userId } = req.params;
+  if (!isValidObjectId(userId)) {
+    return res.status(400).json({
+      error: "Please send a valid object ID",
+    });
+  }
+
+  try {
+    const user = await User.findOne({
+      _id: new mongoose.mongo.ObjectId(userId),
+    });
+    if (!user) {
+      return res.status(404).json({
+        error: "Could not find user.",
+      });
+    }
+
+    const usersWithHigherScores = await User.find({
+      highScore: { $gte: user.highScore },
+    });
+
+    const placement = usersWithHigherScores.length;
+
+    res.json({
+      response: {
+        name: user.name,
+        highScore: user.highScore,
+        placement: placement,
+      },
+    });
+  } catch (e) {
+    res.status(500).json({
+      error: `Failed to get user info with error: ${e}`,
     });
   }
 });

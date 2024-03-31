@@ -6,17 +6,27 @@ import CrownImage from '../assets/realistic-vector-icon-golden-king-queen-crown-
 
 const HomeScreen = ({ navigation }) => {
   const [storedName, setStoredName] = useState('');
-  const topTenUsers = new Array(10).fill({ name: 'Isaiah', score: 100 }).map((user, index) => ({
-    ...user,
-    score: user.score - (index * 10),
-    place: index + 1
-  }));
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
-  const topThreeUsers = [
-    { name: 'Isaiah', score: 200 },
-    { name: 'Isaiah', score: 150 },
-    { name: 'Isaiah', score: 100 },
-  ];
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        // Replace 'http://yourserver.com' with the actual server URL
+        const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/leaderboard/10`);
+        const jsonResponse = await response.json();
+        if (response.ok) {
+          setLeaderboardData(jsonResponse.response); // Assuming the response is structured as { response: [] }
+        } else {
+          console.error('Failed to fetch leaderboard data:', jsonResponse.error);
+        }
+      } catch (error) {
+        console.error('Failed to fetch leaderboard data', error);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []);
+
 
   useEffect(() => {
     // Function to load the stored name
@@ -59,69 +69,74 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView  style={styles.container}>
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-      <View style={styles.header}>
-      <Text style={styles.disposeText}>Dispose</Text>
-        <View style={styles.profileContainer}>
-        <Text style={styles.profileName}>{storedName}</Text>
-          <Ionicons name="person-circle" size={40} color="white" />
-        </View>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.header}>
+            <Text style={styles.disposeText}>Dispose</Text>
+            <View style={styles.profileContainer}>
+              {/* Display the stored name or "Guest" if not available */}
+              <Text style={styles.profileName}>{storedName}</Text>
+              <Ionicons name="person-circle" size={40} color="white" />
+            </View>
+          </View>
 
-      <View style={styles.podiumContainer}>
-      {/* Podium Positions */}
-      <View style={styles.podiumPosition}>
-        <View style={[styles.iconContainer, styles.silver]}>
-          <Ionicons name="person-circle" size={100} color="#C0C0C0" />
-        </View>
-        <Text style={styles.podiumName}>{topThreeUsers[1].name}</Text>
-        <Text style={styles.podiumName}>{topThreeUsers[1].score} pts</Text>
+          {/* Podium and list rendering logic */}
+          <View style={styles.podiumContainer}>
+  {/* Second Place */}
+  {leaderboardData[1] && (
+    <View style={styles.podiumPosition}>
+      <View style={[styles.iconContainer, styles.silver]}>
+        <Ionicons name="person-circle" size={100} color="#C0C0C0" />
       </View>
-      
-      <View style={styles.podiumPosition}>
-        <View style={[styles.iconContainer, styles.gold]}>
-          <Ionicons name="person-circle" size={150} color="#FFD700" />
-        </View>
-        <Text style={styles.podiumName}>{topThreeUsers[0].name}</Text>
-        <Text style={styles.podiumName}>{topThreeUsers[0].score} pts</Text>
-      </View>
-
-      <View style={styles.podiumPosition}>
-        <View style={[styles.iconContainer, styles.bronze]}>
-          <Ionicons name="person-circle" size={100} color="#CD7F32" />
-        </View>
-        <Text style={styles.podiumName}>{topThreeUsers[2].name}</Text>
-        <Text style={styles.podiumName}>{topThreeUsers[2].score} pts</Text>
-      </View>
+      <Text style={styles.podiumName}>{leaderboardData[1].name}</Text>
+      <Text style={styles.podiumName}>{leaderboardData[1].highScore} pts</Text>
     </View>
+  )}
 
-    <View style={styles.listStyle}>
-  {topTenUsers.map((user, index) => (
-    <View key={user.place} style={[styles.userItem, {backgroundColor: getBackgroundColor(user.place)}]}>
-      <Text style={[styles.place, {color: getTextColor(user.place) }]}>{user.place}</Text>
-      <View style={styles.nameAndScore}>
-        <Text style={[styles.userName, {color: getTextColor(user.place) }]}>{user.name}</Text>
-        <Text style={[styles.userScore, {color: getTextColor(user.place) }]}>{user.score} pts</Text>
+  {/* First Place */}
+  {leaderboardData[0] && (
+    <View style={styles.podiumPosition}>
+      <View style={[styles.iconContainer, styles.gold]}>
+        <Ionicons name="person-circle" size={150} color="#FFD700" />
       </View>
+      <Text style={styles.podiumName}>{leaderboardData[0].name}</Text>
+      <Text style={styles.podiumName}>{leaderboardData[0].highScore} pts</Text>
     </View>
-  ))}
+  )}
+
+  {/* Third Place */}
+  {leaderboardData[2] && (
+    <View style={styles.podiumPosition}>
+      <View style={[styles.iconContainer, styles.bronze]}>
+        <Ionicons name="person-circle" size={100} color="#CD7F32" />
+      </View>
+      <Text style={styles.podiumName}>{leaderboardData[2].name}</Text>
+      <Text style={styles.podiumName}>{leaderboardData[2].highScore} pts</Text>
+    </View>
+  )}
 </View>
-      
-      
-      
-      </ScrollView>
-      <TouchableOpacity
-        style={styles.cameraButton}
-        onPress={async () => {
-          await clearName(); // Clear the name when the camera button is pressed
-          navigation.navigate('Camera'); // Then navigate to the Camera screen
-        }}
-      >
-        <Ionicons name="camera" size={30} color="#fff" />
-      </TouchableOpacity>
-    </View>
+
+
+          {/* List of users */}
+          <View style={styles.listStyle}>
+            {leaderboardData.map((user, index) => (
+              <View key={user.place} style={[styles.userItem, { backgroundColor: getBackgroundColor(index + 1) }]}>
+                <Text style={[styles.place, { color: getTextColor(index + 1) }]}>{index + 1}</Text>
+                <Text style={[styles.userName, { color: getTextColor(index + 1) }]}>{user.name}</Text>
+                <Text style={[styles.userScore, { color: getTextColor(index + 1) }]}>{user.highScore} pts</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+
+        <TouchableOpacity
+          style={styles.cameraButton}
+          onPress={() => navigation.navigate('Camera')}
+        >
+          <Ionicons name="camera" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

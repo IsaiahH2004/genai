@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  TouchableWithoutFeedback, // Import TouchableWithoutFeedback
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -52,6 +54,7 @@ const WelcomeScreen = ({ navigation }) => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
       <Ionicons name="person-circle" size={60} color="#fff" />
       <TextInput
@@ -65,6 +68,7 @@ const WelcomeScreen = ({ navigation }) => {
         <Text style={styles.saveText}>Next</Text>
       </TouchableOpacity>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
