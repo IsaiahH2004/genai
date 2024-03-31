@@ -5,8 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
-  TouchableWithoutFeedback, // Import TouchableWithoutFeedback
+  TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,13 +26,16 @@ const WelcomeScreen = ({ navigation }) => {
   const saveData = async () => {
     if (name !== "") {
       try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/register`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: name }),
-        });
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_SERVER_URL}/register`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: name }),
+          }
+        );
         const jsonResponse = await response.json();
         if (response.status === 200) {
           console.log("User registered:", jsonResponse);
@@ -55,19 +57,19 @@ const WelcomeScreen = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={styles.container}>
-      <Ionicons name="person-circle" size={60} color="#fff" />
-      <TextInput
-        style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Enter Name..."
-        placeholderTextColor={"white"}
-      />
-      <TouchableOpacity style={styles.next} onPress={saveData}>
-        <Text style={styles.saveText}>Next</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.container}>
+        <Ionicons name="person-circle" size={60} color="#fff" />
+        <TextInput
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="Enter Name..."
+          placeholderTextColor={"white"}
+        />
+        <TouchableOpacity style={styles.next} onPress={saveData}>
+          <Text style={styles.saveText}>Next</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
