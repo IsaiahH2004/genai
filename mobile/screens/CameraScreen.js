@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, SafeAreaView } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,7 +11,7 @@ const CameraScreen = ({ navigation }) => {
 
   const screenWidth = Dimensions.get('window').width;
 const cameraSizeWidth = screenWidth * 0.9;
-const cameraSizeHeight = screenWidth * 1.5;
+const cameraSizeHeight = screenWidth * 1.2;
 const cameraSize = screenWidth * 0.9;
 const cameraViewSize = screenWidth * 0.9;
 
@@ -62,24 +62,39 @@ const cameraViewSize = screenWidth * 0.9;
   }
 
   return (
+    <SafeAreaView style={styles.container}> 
     <View style={styles.container}>
-      <View style={[styles.cameraContainer, { width: cameraViewSize, height: cameraViewSize }]}>
+      <View style={styles.header}>
+      <Text style={styles.disposeText}>Dispose</Text>
+        <View style={styles.profileContainer}>
+        <Text style={styles.profileName}>Isaiah</Text>
+          <Ionicons name="person-circle" size={40} color="white" />
+        </View>
+      </View>
+      <View style={[styles.cameraContainer, { width: cameraSizeWidth, height: cameraSizeHeight }]}>
       <Camera
         ref={cameraRef}
         style={[styles.cameraContainer, { width: cameraSizeWidth, height: cameraSizeHeight }]}
         type={Camera.Constants.Type.back}
       />
       </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={takePicture}
-          >
-            <Text style={styles.text}> Take Photo </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.circleButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="close" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.circleButton}
+          onPress={takePicture}
+        >
+          <Ionicons name="camera" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
       
     </View>
+    </SafeAreaView>
   );
 };
 
@@ -94,7 +109,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 30,
   },
+
   camera: {
     alignSelf: 'center',
   },
@@ -130,8 +147,19 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 20,
+    width: '90%',
+    marginTop: 20,
+  },
+  circleButton: {
+    backgroundColor: '#1fd655',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   capture: {
     flex: 0,

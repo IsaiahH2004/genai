@@ -27,7 +27,7 @@ const WelcomeScreen = ({ navigation }) => {
     if (name !== "") { // Corrected condition to check name
       try {
         await AsyncStorage.setItem("Name", name);
-        // navigation.goBack();
+        navigation.navigate('MainApp', { screen: 'Home' });
       } catch (error) {
         console.error("Failed to save the data to storage", error);
       }
