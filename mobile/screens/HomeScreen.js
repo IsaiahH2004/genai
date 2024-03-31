@@ -73,12 +73,21 @@ const HomeScreen = ({ navigation }) => {
     loadStoredName();
   }, []);
 
-  const getBackgroundColor = (place) => {
-    if (place === 1) return "#ffca28";
-    if (place === 2) return "#C0C0C0";
-    if (place === 3) return "#ff8228";
-    return "#565656";
+  const getBackgroundColor = (index) => {
+    const place = index; // Adjust index to match placement (1-based)
+    if (currentUser && currentUser.placement === place) {
+      return "#990000"; // Highlight the current user's placement in red
+    } else if (place === 1) {
+      return "#ffca28";
+    } else if (place === 2) {
+      return "#C0C0C0";
+    } else if (place === 3) {
+      return "#ff8228";
+    } else {
+      return "#565656";
+    }
   };
+
 
   const getTextColor = (place) => {
     if (place === 1) return "black";
@@ -87,15 +96,28 @@ const HomeScreen = ({ navigation }) => {
     return "white";
   };
 
+  const resetUserAndNavigate = async () => {
+    try {
+      await AsyncStorage.setItem("UserID", ""); // Reset UserID
+      await AsyncStorage.setItem("UserName", ""); // Reset UserName
+      navigation.navigate("Welcome"); // Navigate to Welcome page
+    } catch (error) {
+      console.error("Error resetting user data:", error);
+      Alert.alert("Error", "Failed to reset user data.");
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.header}>
-            <Text style={styles.disposeText}>Dispose</Text>
+            <Text style={styles.disposeText}>Dispose It Right</Text>
             <View style={styles.profileContainer}>
-              <Text style={styles.profileName}>{storedName}</Text>
+              <TouchableOpacity onPress={resetUserAndNavigate}>
+                <Text style={styles.profileName}>{storedName}</Text>
+              </TouchableOpacity>
               <Ionicons name="person-circle" size={40} color="black" />
             </View>
           </View>
@@ -164,19 +186,19 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </View>
             ))}
-            {currentUser && (
+            {currentUser && currentUser.placement > 10 && (
               <View
                 style={[
                   styles.currUserItem,
                   {
-                    backgroundColor: getBackgroundColor(currentUser.placement),
+                    backgroundColor: "#990000",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.place,
-                    { color: getTextColor(currentUser.placement) },
+                    { color: getTextColor(currentUser.placement + 1) },
                   ]}
                 >
                   {currentUser.placement}
@@ -184,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
                 <Text
                   style={[
                     styles.userName,
-                    { color: getTextColor(currentUser.placement) },
+                    { color: getTextColor(currentUser.placement + 1) },
                   ]}
                 >
                   {currentUser.name}
@@ -192,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
                 <Text
                   style={[
                     styles.userScore,
-                    { color: getTextColor(currentUser.placement) },
+                    { color: getTextColor(currentUser.placement + 1) },
                   ]}
                 >
                   {currentUser.highScore} pts

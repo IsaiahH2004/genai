@@ -120,7 +120,7 @@ const CheckList = ({ route }) => {
     <SafeAreaView style={styles.containerM}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.disposeText}>Dispose</Text>
+          <Text style={styles.disposeText}>Dispose It Right</Text>
           <View style={styles.profileContainer}>
             <Text style={styles.profileName}>{storedName || "Guest"}</Text>
             <Ionicons name="person-circle" size={40} color="black" />

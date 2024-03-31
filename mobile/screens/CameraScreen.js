@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   Dimensions,
 } from "react-native";
 import { Camera } from "expo-camera";
@@ -86,7 +85,7 @@ const CameraScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.disposeText}>Dispose</Text>
+          <Text style={styles.disposeText}>Dispose It Right</Text>
           <View style={styles.profileContainer}>
             <Text style={styles.profileName}>{storedName}</Text>
             <Ionicons name="person-circle" size={40} color="black" />
