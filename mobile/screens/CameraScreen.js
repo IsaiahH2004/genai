@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const CameraScreen = ({ navigation }) => {
   const [storedId, setStoredId] = useState("");
+  const [storedName, setStoredName] = useState("");
   const [hasPermission, setHasPermission] = useState(null);
   const cameraRef = useRef(null);
 
@@ -25,8 +26,12 @@ const CameraScreen = ({ navigation }) => {
   useEffect(() => {
     const loadStoredNameAndId = async () => {
       const id = await AsyncStorage.getItem("UserID");
+      const name = await AsyncStorage.getItem("UserName");
       if (id) {
         setStoredId(id);
+      }
+      if (name) {
+        setStoredName(name);
       }
     };
     loadStoredNameAndId();
@@ -82,7 +87,7 @@ const CameraScreen = ({ navigation }) => {
         <View style={styles.header}>
           <Text style={styles.disposeText}>Dispose</Text>
           <View style={styles.profileContainer}>
-            <Text style={styles.profileName}>Isaiah</Text>
+            <Text style={styles.profileName}>{storedName}</Text>
             <Ionicons name="person-circle" size={40} color="black" />
           </View>
         </View>
