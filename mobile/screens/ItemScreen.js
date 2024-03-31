@@ -7,63 +7,81 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
-const ItemScreen = ({ navigation }) => {
+const ItemScreen = ({ route, navigation }) => {
+  const [storedName, setStoredName] = useState('');
   const [items, setItems] = useState([]);
-  const [storedId, setStoredId] = useState("66088bca96eff2b489251737");
+  const [storedId, setStoredId] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Function to load the stored name
-    const loadStoredId = async () => {
-      const id = await AsyncStorage.getItem("UserID");
-
-      if (id) {
-        setStoredId(id); // Update the state with the stored name
+    // Load stored name
+    const loadStoredName = async () => {
+      const name = await AsyncStorage.getItem("Name");
+      if (name) {
+        setStoredName(name);
       }
     };
-
-    loadStoredId();
+    loadStoredName();
   }, []);
 
   useEffect(() => {
-    const getItems = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/items/${storedId}`
-        );
-        if (!response.ok) {
-          console.log("Server failed:", response.status);
-          return;
-        }
-        const data = await response.json();
-        setItems(data.response);
-      } catch (error) {
-        console.error("Fetch function failed:", error);
-      } finally {
-        setLoading(false);
+    // Load stored ID
+    const loadStoredId = async () => {
+      const id = await AsyncStorage.getItem("UserID");
+      if (id) {
+        setStoredId(id);
       }
     };
-    getItems();
+    loadStoredId();
   }, []);
 
+  const fetchItems = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/items/${storedId}`);
+      if (!response.ok) {
+        console.log("Server failed:", response.status);
+        return;
+      }
+      const data = await response.json();
+      setItems(data.response);
+    } catch (error) {
+      console.error("Fetch function failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Use useFocusEffect to fetch items every time the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchItems(); // Call fetchItems directly if it's not changing.
+    }, []) // Ensure dependencies are correct.
+  );
+
   return (
+    <SafeAreaView style={styles.containerM}>
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.disposeText}>Trash Items</Text>
-        <View style={styles.profileContainer}>
-          <Ionicons name="person-circle" size={40} color="#000" />
-        </View>
-      </View>
+    <View style={styles.header}>
+            <Text style={styles.disposeText}>Dispose</Text>
+            <View style={styles.profileContainer}>
+              {/* Display the stored name or "Guest" if not available */}
+              <Text style={styles.profileName}>{storedName}</Text>
+              <Ionicons name="person-circle" size={40} color="black" />
+            </View>
+          </View>
 
       <ScrollView style={styles.list}>
         {loading ? (
           <ActivityIndicator color={"red"} size="large" />
         ) : (
-          items.reverse().map((item, index) => (
+          items.slice().reverse().map((item, index) => (
             <View key={index}>
               <TouchableOpacity
                 style={styles.item}
@@ -75,7 +93,15 @@ const ItemScreen = ({ navigation }) => {
                   <View style={styles.textContainter}>
                     <Text style={styles.text}>{item.name}</Text>
                   </View>
-                  {/* {item.isCom<View style={styles.progress}></View>} */}
+                  {item.isComplete === false ? (
+                    <View style={styles.incomplete}>
+                      <Ionicons name="close" size={28} color={"red"} />
+                    </View>
+                  ) : (
+                    <View style={styles.complete}>
+                       <Ionicons name="checkmark-circle" size={28} color={"#00EB32"} />
+                    </View>
+                  )}
                 </View>
               </TouchableOpacity>
             </View>
@@ -84,6 +110,7 @@ const ItemScreen = ({ navigation }) => {
       </ScrollView>
       <StatusBar style="auto" />
     </View>
+    </SafeAreaView>
   );
 };
 
@@ -93,8 +120,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: "10%",
   },
+  containerM: {
+    flex: 1,
+    backgroundColor: "white"
+
+  },
   text: {
     color: "#ffffff",
+    fontSize: 20,
+    alignItems: 'center',
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
   list: {
     marginTop: "10%",
@@ -125,22 +162,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  itemContainer:{
-    flexDirection: 'row',
-    padding: 20,
+  itemContainer: {
+    flexDirection: "row",
+    padding: 10,
   },
-  textContainter:{
-    flex: .7,
+  textContainter: {
+    flex: 0.8,
   },
-  incomplete:{
-    backgroundColor: 'red',
-    flex: 0.4,
+  incomplete: {
+    flex: 0.2,
     borderRadius: 10,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  complete:{
-    backgroundColor: 'green',
-    flex: 0.4,
+  complete: {
+    flex: 0.2,
     borderRadius: 10,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileName: {
+    fontSize: 18,
+    color: "black",
+    paddingRight: 8,
   },
 });
 
