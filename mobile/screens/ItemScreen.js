@@ -68,7 +68,7 @@ const ItemScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.containerM}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.disposeText}>Dispose</Text>
+          <Text style={styles.disposeText}>Dispose It Right</Text>
           <View style={styles.profileContainer}>
             <Text style={styles.profileName}>{storedName}</Text>
             <Ionicons name="person-circle" size={40} color="black" />
