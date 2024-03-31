@@ -4,12 +4,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// Import screens
 import HomeScreen from './screens/HomeScreen';
-import TasksScreen from './screens/ItemScreen'; // Make sure this is the correct import
+import ItemScreen from './screens/ItemScreen'; // Make sure this is the correct import
 import CameraScreen from './screens/CameraScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
+import CheckList from './screens/ChecklistScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,14 +28,31 @@ function HomeTabNavigator() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
-      tabBarOptions={{
+      screenOptions={{
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Tasks" component={TasksScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Tasks" component={TaskNavigator} options={{ headerShown: false }} />
     </Tab.Navigator>
+  );
+}
+
+function TaskNavigator() {
+  return (
+    <Stack.Navigator initialRouteName="Item Screen">
+      <Stack.Screen
+        name="Item Screen"
+        component={ItemScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CheckList"
+        component={CheckList}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 }
 
@@ -68,5 +84,7 @@ function App() {
     </NavigationContainer>
   );
 }
+
+
 
 export default App;

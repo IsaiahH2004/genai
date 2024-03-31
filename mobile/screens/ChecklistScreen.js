@@ -1,97 +1,111 @@
-import { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const CheckList = () => {
-    const [toggleCheckBox, setToggleCheckBox] = useState(false)
-    
+const CheckList = ({ route }) => {
+  const { id } = route.params;
+  const [steps, setSteps] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    // Sample data for the list
-  const data = [
-    { id: 1, name: 'Task 1' },
-    { id: 2, name: 'Task 2' },
-    { id: 3, name: 'Task 3' },
-  ];
+  useEffect(() => {
+    const getItems = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_SERVER_URL}/item/${id}`
+        );
+        if (!response.ok) {
+          console.log("Server failed:", response.status);
+          return;
+        }
+        const data = await response.json();
+        setSteps(data.response.steps); // Update state with steps array
 
-  // Render function for each item in the list
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item}>
-      <Text style={styles.text}>{item.name}</Text>
+        // console.log(id);
+      } catch (error) {
+        console.error("Fetch function failed:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getItems();
+  }, []);
+
+  const renderItem = (step, index) => {
+    console.log(step)
+    return(
+    <TouchableOpacity style={styles.item} key={index}>
+      <Text style={styles.text}>{step.description}</Text>
     </TouchableOpacity>
-  );
+    )
+  };
 
   return (
     <View style={styles.container}>
-        <View style={styles.header}>
-            <Text style={styles.disposeText}>Name</Text>
-            <View style={styles.profileContainer}>
-                <Ionicons name="person-circle" size={40} color="#000" />
-            </View>
+      <View style={styles.header}>
+        <Text style={styles.disposeText}>Trash Items</Text>
+        <View style={styles.profileContainer}>
+          <Ionicons name="person-circle" size={40} color="#000" />
         </View>
+      </View>
 
-        <FlatList
-            style={styles.list}
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-        />
-      {/* <Text style={{color:"white"}}>Item Screen </Text> */}
+      <ScrollView style={styles.list}>
+        {loading ? (
+          <ActivityIndicator color={"red"} size="large" />
+        ) : (
+          steps && steps.map((step, index) => renderItem(step, index))
+        )}
+      </ScrollView>
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#312244',
-    padding: '10%',
+    backgroundColor: "#312244",
+    padding: "10%",
   },
-  text:{
+  text: {
     color: "#ffffff",
   },
   list: {
     marginTop: "10%",
   },
   item: {
-    backgroundColor: '#262527',
+    backgroundColor: "#262527",
     padding: 20,
     width: 300,
     margin: 5,
-    borderColor: '#3f3e41',
+    borderColor: "#3f3e41",
     borderRadius: 8,
   },
   header: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
   },
   disposeText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileName: {
-    fontSize: 18,
-    marginRight: 8,
-  },
-  rightMostStep: {
-    width: 60,
-    height: 120,
-    backgroundColor: '#FFD700',
-  },
-  stepText: {
-    fontWeight: 'bold',
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 
-export default  CheckList;
+export default CheckList;
