@@ -7,15 +7,17 @@ import CrownImage from '../assets/realistic-vector-icon-golden-king-queen-crown-
 const HomeScreen = ({ navigation }) => {
   const [storedName, setStoredName] = useState('');
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const userName = AsyncStorage.getItem("Name");
 
   useEffect(() => {
+    // Fetch leaderboard data
     const fetchLeaderboardData = async () => {
       try {
-        // Replace 'http://yourserver.com' with the actual server URL
-        const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/leaderboard/10`);
+        const response = await fetch('http://172.20.10.3:8000/leaderboard/10');
         const jsonResponse = await response.json();
         if (response.ok) {
-          setLeaderboardData(jsonResponse.response); // Assuming the response is structured as { response: [] }
+          setLeaderboardData(jsonResponse.response);
         } else {
           console.error('Failed to fetch leaderboard data:', jsonResponse.error);
         }
@@ -24,7 +26,27 @@ const HomeScreen = ({ navigation }) => {
       }
     };
 
+    // Fetch current user data
+    const fetchCurrentUserData = async () => {
+      const userId = await AsyncStorage.getItem("UserID");
+      console.log("hfhfushdfjknsdjkvbdsjkfbvjkefnbvjodnfbov");
+      if (userId) {
+        try {
+          const response = await fetch(`http://172.20.10.3:8000/info/6608d30ba335dede02765821`);
+          const jsonResponse = await response.json();
+          if (response.ok) {
+            setCurrentUser(jsonResponse.response);
+          } else {
+            console.error('Failed to fetch current user data:', jsonResponse.error);
+          }
+        } catch (error) {
+          console.error('Failed to fetch current user data', error);
+        }
+      }
+    };
+
     fetchLeaderboardData();
+    fetchCurrentUserData();
   }, []);
 
 
@@ -127,6 +149,13 @@ const HomeScreen = ({ navigation }) => {
                 <Text style={[styles.userScore, { color: getTextColor(index + 1) }]}>{user.highScore} pts</Text>
               </View>
             ))}
+            {currentUser && (
+              <View style={[styles.currUserItem, { backgroundColor: getBackgroundColor(currentUser.placement) }]}>
+                <Text style={[styles.place, { color: getTextColor(currentUser.placement) }]}>{currentUser.placement}</Text>
+                <Text style={[styles.userName, { color: getTextColor(currentUser.placement) }]}>{currentUser.name}</Text>
+                <Text style={[styles.userScore, { color: getTextColor(currentUser.placement) }]}>{currentUser.highScore} pts</Text>
+              </View>
+            )}
           </View>
         </ScrollView>
 
@@ -237,6 +266,18 @@ const HomeScreen = ({ navigation }) => {
       paddingVertical: 20,
       paddingHorizontal: 10,
       marginVertical: 5,
+      marginHorizontal: 20,
+      borderRadius: 50,
+      backgroundColor: '#FFFFFF',
+    },
+    currUserItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 20,
+      paddingHorizontal: 10,
+      marginBottom: 5,
+      marginTop: 30,
       marginHorizontal: 20,
       borderRadius: 50,
       backgroundColor: '#FFFFFF',
