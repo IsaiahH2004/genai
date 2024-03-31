@@ -208,7 +208,7 @@ app.patch("/complete/:itemId", async (req, res) => {
 
     await User.findOneAndUpdate(
       { _id: new mongoose.mongo.ObjectId(item.userId) },
-      { $inc: { highScore: 1 } },
+      { $inc: { highScore: item.steps.length } },
     );
   } catch (e) {
     res.status(500).json({
