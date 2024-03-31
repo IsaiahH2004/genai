@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
-  SafeAreaView,
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CameraScreen = ({ navigation }) => {
   const [storedId, setStoredId] = useState("");

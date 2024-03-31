@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const WelcomeScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -56,6 +57,7 @@ const WelcomeScreen = ({ navigation }) => {
   };
 
   return (
+    <SafeAreaView style={styles.containerM}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <Ionicons name="person-circle" size={60} color="#fff" />
@@ -71,6 +73,7 @@ const WelcomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
@@ -81,6 +84,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 0,
     backgroundColor: "#312244",
+  },
+  containerM: {
+    flex: 1,
+    backgroundColor: "white",
   },
   next: {
     position: "absolute",

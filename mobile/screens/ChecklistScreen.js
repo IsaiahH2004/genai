@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  SafeAreaView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CheckList = ({ route }) => {
   const [storedName, setStoredName] = useState("");
@@ -58,42 +58,46 @@ const CheckList = ({ route }) => {
   }, [id]);
 
   const toggleCheck = async (index) => {
-    const updatedSteps = steps.map((step, i) =>
-      i === index ? { ...step, checked: !step.checked } : step
-    );
-    setSteps(updatedSteps);
-    const toggleUrl = `${process.env.EXPO_PUBLIC_SERVER_URL}/item/${id}/toggle/${index}`;
-    try {
-      const toggleResponse = await fetch(toggleUrl, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    // Only proceed if the current step is not checked
+    if (!steps[index].checked) {
+      const updatedSteps = steps.map((step, i) =>
+        i === index ? { ...step, checked: !step.checked } : step
+      );
+      setSteps(updatedSteps);
 
-      if (!toggleResponse.ok) {
-        throw new Error("Failed to toggle step");
-      }
-
-      const allStepsComplete = updatedSteps.every((step) => step.checked);
-      if (allStepsComplete) {
-        const completeUrl = `${process.env.EXPO_PUBLIC_SERVER_URL}/complete/${id}`;
-        const completeResponse = await fetch(completeUrl, {
+      const toggleUrl = `${process.env.EXPO_PUBLIC_SERVER_URL}/item/${id}/toggle/${index}`;
+      try {
+        const toggleResponse = await fetch(toggleUrl, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ itemId: id }),
         });
 
-        if (!completeResponse.ok) {
-          throw new Error("Failed to mark item as complete");
+        if (!toggleResponse.ok) {
+          throw new Error("Failed to toggle step");
         }
 
-        console.log("Item marked as complete!");
+        const allStepsComplete = updatedSteps.every((step) => step.checked);
+        if (allStepsComplete) {
+          const completeUrl = `${process.env.EXPO_PUBLIC_SERVER_URL}/complete/${id}`;
+          const completeResponse = await fetch(completeUrl, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ itemId: id }),
+          });
+
+          if (!completeResponse.ok) {
+            throw new Error("Failed to mark item as complete");
+          }
+
+          console.log("Item marked as complete!");
+        }
+      } catch (error) {
+        console.error("Error during step toggle or item completion:", error);
       }
-    } catch (error) {
-      console.error("Error during step toggle or item completion:", error);
     }
   };
 
