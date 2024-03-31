@@ -58,7 +58,6 @@ useEffect(() => {
           [],
           { compress: 1, format: ImageManipulator.SaveFormat.JPEG, base64: true }
         );
-        console.log(resizedImage);
         fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/steps/get`, {
 
           method: "POST",
