@@ -25,6 +25,7 @@ app.use(cors());
 app.post("/steps/get", async (req, res) => {
   const { image, userId } = await req.body;
 
+  console.log("here", userId)
   try {
     const vertex_ai = new VertexAI({
       project: process.env.PROJECT_ID,
@@ -50,7 +51,7 @@ app.post("/steps/get", async (req, res) => {
       contentResponse.candidates[0].content.parts[0].text.split(";");
 
     const item = new Item({
-      name: splitted[0],
+      name: splitted[0].trim(),
       steps: splitted.slice(1).map((e) => {
         return {
           description: e.trim(),
@@ -58,6 +59,7 @@ app.post("/steps/get", async (req, res) => {
         };
       }),
       userId: userId,
+      isComplete: false
     });
     await item.save();
 
