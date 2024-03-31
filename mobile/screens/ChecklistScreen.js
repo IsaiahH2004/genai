@@ -7,13 +7,28 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CheckList = ({ route }) => {
+  const [storedName, setStoredName] = useState('');
   const { id } = route.params;
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Function to load the stored name
+    const loadStoredName = async () => {
+      const name = await AsyncStorage.getItem("Name");
+      if (name) {
+        setStoredName(name); // Update the state with the stored name
+      }
+    };
+
+    loadStoredName();
+  }, []);
 
   useEffect(() => {
     const getItems = async () => {
@@ -48,13 +63,16 @@ const CheckList = ({ route }) => {
   };
 
   return (
+    <SafeAreaView style={styles.containerM}>
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.disposeText}>Trash Items</Text>
-        <View style={styles.profileContainer}>
-          <Ionicons name="person-circle" size={40} color="#000" />
-        </View>
-      </View>
+    <View style={styles.header}>
+            <Text style={styles.disposeText}>Dispose</Text>
+            <View style={styles.profileContainer}>
+              {/* Display the stored name or "Guest" if not available */}
+              <Text style={styles.profileName}>{storedName}</Text>
+              <Ionicons name="person-circle" size={40} color="black" />
+            </View>
+          </View>
 
       <ScrollView style={styles.list}>
         {loading ? (
@@ -65,6 +83,7 @@ const CheckList = ({ route }) => {
       </ScrollView>
       <StatusBar style="auto" />
     </View>
+    </SafeAreaView>
   );
 };
 
@@ -73,6 +92,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#312244",
     padding: "10%",
+  },
+  containerM: {
+    flex: 1,
   },
   text: {
     color: "#ffffff",
@@ -105,6 +127,11 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  profileName: {
+    fontSize: 18,
+    color: "black",
+    paddingRight: 8,
   },
 });
 

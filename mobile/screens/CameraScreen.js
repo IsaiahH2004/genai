@@ -38,7 +38,7 @@ useEffect(() => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
@@ -90,7 +90,7 @@ useEffect(() => {
       <Text style={styles.disposeText}>Dispose</Text>
         <View style={styles.profileContainer}>
         <Text style={styles.profileName}>Isaiah</Text>
-          <Ionicons name="person-circle" size={40} color="white" />
+          <Ionicons name="person-circle" size={40} color="black" />
         </View>
       </View>
       <View style={[styles.cameraContainer, { width: cameraSizeWidth, height: cameraSizeHeight }]}>
@@ -125,15 +125,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#312244",
+    backgroundColor: "white",
   },
   cameraContainer: {
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
+    borderRadius: 20,
   },
-
   camera: {
     alignSelf: 'center',
   },
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   disposeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: "#9147ff",
+    color: "black",
   },
   profileContainer: {
     flexDirection: 'row',
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 18,
-    color: "white",
+    color: "black",
     paddingRight: 8,
   },
   preview: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   circleButton: {
-    backgroundColor: '#1fd655',
+    backgroundColor: '#a29fe0',
     borderRadius: 30,
     width: 60,
     height: 60,

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image , SafeAreaView} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CrownImage from '../assets/realistic-vector-icon-golden-king-queen-crown-isolated-white-background_134830-2012.jpg.avif';
 
 const HomeScreen = ({ navigation }) => {
   const [storedName, setStoredName] = useState('');
@@ -99,7 +98,7 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.profileContainer}>
               {/* Display the stored name or "Guest" if not available */}
               <Text style={styles.profileName}>{storedName}</Text>
-              <Ionicons name="person-circle" size={40} color="white" />
+              <Ionicons name="person-circle" size={40} color="black" />
             </View>
           </View>
 
@@ -182,7 +181,7 @@ const HomeScreen = ({ navigation }) => {
       backgroundColor: "#fff",
     },
     podiumName: {
-      color: "white",
+      color: "black",
       fontWeight: "bold",
     },
     cameraButton: {
@@ -214,7 +213,7 @@ const HomeScreen = ({ navigation }) => {
     disposeText: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: "#2721fd",
+      color: "black",
     },
     profileContainer: {
       flexDirection: 'row',
@@ -223,7 +222,7 @@ const HomeScreen = ({ navigation }) => {
     },
     profileName: {
       fontSize: 18,
-      color: "white",
+      color: "black",
       paddingRight: 8,
     },
     podiumContainer: {
@@ -276,7 +275,7 @@ const HomeScreen = ({ navigation }) => {
       justifyContent: 'space-between',
       paddingVertical: 20,
       paddingHorizontal: 10,
-      marginBottom: 5,
+      marginBottom: 20,
       marginTop: 30,
       marginHorizontal: 20,
       borderRadius: 50,
@@ -298,14 +297,14 @@ const HomeScreen = ({ navigation }) => {
     },
     userName: {
       fontSize: 16,
-      color: "white",
+      color: "black",
       fontWeight: 'bold',
 
     },
     userScore: {
       fontSize: 16,
       fontWeight: 'bold',
-      color: "white",
+      color: "black",
       paddingRight: 10,
     },
     placeItemFirst: {
