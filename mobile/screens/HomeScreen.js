@@ -43,9 +43,9 @@ const HomeScreen = ({ navigation }) => {
 
   const getBackgroundColor = (place) => {
     if (place === 1) return '#ffca28';
-    if (place === 2) return '#f4f4f4';
+    if (place === 2) return '#C0C0C0';
     if (place === 3) return '#ff8228';
-    return '#312244';
+    return '#565656';
   };
 
   const getTextColor = (place) => {
@@ -150,7 +150,7 @@ const HomeScreen = ({ navigation }) => {
     container: {
       flex: 1,
       alignItems: 'center',
-      backgroundColor: "#312244",
+      backgroundColor: "#fff",
     },
     podiumName: {
       color: "white",
@@ -160,7 +160,7 @@ const HomeScreen = ({ navigation }) => {
       position: 'absolute',
       bottom: 20,
       right: 20,
-      backgroundColor: '#1fd655',
+      backgroundColor: '#a29fe0',
       borderRadius: 50,
       padding: 15,
     },
@@ -185,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
     disposeText: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: "#9147ff",
+      color: "#2721fd",
     },
     profileContainer: {
       flexDirection: 'row',
@@ -239,7 +239,7 @@ const HomeScreen = ({ navigation }) => {
       marginVertical: 5,
       marginHorizontal: 20,
       borderRadius: 50,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#a29fe0',
     },
     place: {
       fontSize: 16,
