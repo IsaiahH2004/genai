@@ -27,19 +27,20 @@ app.use(cors());
 // Image sent in body
 app.post("/steps/get", async (req, res) => {
   const { image } = await req.body;
+  console.log(image)
 
-  const vertex_ai = new VertexAI({ project: process.env.PROJECT_ID, location: "us-central1" });
+  const vertex_ai = new VertexAI({
+    project: process.env.PROJECT_ID,
+    location: "us-central1",
+  });
   const generativeVisionModel = vertex_ai.getGenerativeModel({
     model: "gemini-1.0-pro-vision",
   });
 
-  // Replace this with your own base64 image string
-  const base64Image =
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
   const filePart = {
-    inline_data: { data: base64Image, mime_type: "image/jpeg" },
+    inline_data: { data: image.base64, mime_type: "image/jpeg" },
   };
-  const textPart = { text: "What is this picture about?" };
+  const textPart = { text: "I am trying to trying to dispose of the item in this image in the most sustainable way. Please provide me with a very concise step by step procedure to do this." };
   const request = {
     contents: [{ role: "user", parts: [textPart, filePart] }],
   };

@@ -38,7 +38,7 @@ const cameraViewSize = screenWidth * 0.9;
         );
         console.log(resizedImage);
 
-        fetch(`https://long-planets-think.loca.lt/steps/get`, {
+        fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/steps/get`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,6 @@ const cameraViewSize = screenWidth * 0.9;
             image: resizedImage,
           }),
         });
-        console.log(`https://long-planets-think.loca.lt/steps/get`);
       } catch (error) {
         console.log("Error", "Failed to take picture: " + error.message);
       }
