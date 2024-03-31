@@ -13,7 +13,7 @@ const HomeScreen = ({ navigation }) => {
     // Fetch leaderboard data
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch('http://172.20.10.3:8000/leaderboard/10');
+        const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/leaderboard/10`);
         const jsonResponse = await response.json();
         if (response.ok) {
           setLeaderboardData(jsonResponse.response);
