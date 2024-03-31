@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, SafeAreaVi
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const CameraScreen = ({ navigation }) => {
@@ -22,6 +23,7 @@ useEffect(() => {
   const loadStoredNameAndId = async () => {
     const name = await AsyncStorage.getItem("Name");
     const id = await AsyncStorage.getItem("UserID");
+      console.log(id)
     if (name) {
       setStoredName(name); // Update the state with the stored name
     }
