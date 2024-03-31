@@ -104,6 +104,7 @@ const CameraScreen = ({ navigation }) => {
               { width: cameraSizeWidth, height: cameraSizeHeight },
             ]}
             type={Camera.Constants.Type.back}
+            autoFocus={Camera.Constants.AutoFocus.on}
           />
         </View>
         <View style={styles.buttonContainer}>
