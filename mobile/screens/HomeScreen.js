@@ -16,51 +16,53 @@ const HomeScreen = ({ navigation }) => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  useFocusEffect(useCallback(() => {
-    const fetchLeaderboardData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.EXPO_PUBLIC_SERVER_URL}/leaderboard/10`
-        );
-        const jsonResponse = await response.json();
-        if (response.ok) {
-          setLeaderboardData(jsonResponse.response);
-        } else {
-          console.error(
-            "Failed to fetch leaderboard data:",
-            jsonResponse.error
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch leaderboard data", error);
-      }
-    };
-
-    const fetchCurrentUserData = async () => {
-      const userId = await AsyncStorage.getItem("UserID");
-      if (userId) {
+  useFocusEffect(
+    useCallback(() => {
+      const fetchLeaderboardData = async () => {
         try {
           const response = await fetch(
-            `${process.env.EXPO_PUBLIC_SERVER_URL}/info/${userId}`
+            `${process.env.EXPO_PUBLIC_SERVER_URL}/leaderboard/10`
           );
           const jsonResponse = await response.json();
           if (response.ok) {
-            setCurrentUser(jsonResponse.response);
+            setLeaderboardData(jsonResponse.response);
           } else {
             console.error(
-              "Failed to fetch current user data:",
+              "Failed to fetch leaderboard data:",
               jsonResponse.error
             );
           }
         } catch (error) {
-          console.error("Failed to fetch current user data", error);
+          console.error("Failed to fetch leaderboard data", error);
         }
-      }
-    };
+      };
 
-    fetchLeaderboardData();
-    fetchCurrentUserData();
-  }, []));
+      const fetchCurrentUserData = async () => {
+        const userId = await AsyncStorage.getItem("UserID");
+        if (userId) {
+          try {
+            const response = await fetch(
+              `${process.env.EXPO_PUBLIC_SERVER_URL}/info/${userId}`
+            );
+            const jsonResponse = await response.json();
+            if (response.ok) {
+              setCurrentUser(jsonResponse.response);
+            } else {
+              console.error(
+                "Failed to fetch current user data:",
+                jsonResponse.error
+              );
+            }
+          } catch (error) {
+            console.error("Failed to fetch current user data", error);
+          }
+        }
+      };
+
+      fetchLeaderboardData();
+      fetchCurrentUserData();
+    }, [])
+  );
 
   useEffect(() => {
     const loadStoredName = async () => {
@@ -74,10 +76,8 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const getBackgroundColor = (index) => {
-    const place = index; // Adjust index to match placement (1-based)
-    if (currentUser && currentUser.placement === place) {
-      return "#990000"; // Highlight the current user's placement in red
-    } else if (place === 1) {
+    const place = index;
+    if (place === 1) {
       return "#ffca28";
     } else if (place === 2) {
       return "#C0C0C0";
@@ -88,7 +88,6 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-
   const getTextColor = (place) => {
     if (place === 1) return "black";
     if (place === 2) return "black";
@@ -98,20 +97,22 @@ const HomeScreen = ({ navigation }) => {
 
   const resetUserAndNavigate = async () => {
     try {
-      await AsyncStorage.setItem("UserID", ""); // Reset UserID
-      await AsyncStorage.setItem("UserName", ""); // Reset UserName
-      navigation.navigate("Welcome"); // Navigate to Welcome page
+      await AsyncStorage.setItem("UserID", "");
+      await AsyncStorage.setItem("UserName", "");
+      navigation.navigate("Welcome");
     } catch (error) {
       console.error("Error resetting user data:", error);
       Alert.alert("Error", "Failed to reset user data.");
     }
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <Text style={styles.disposeText}>Dispose It Right</Text>
             <View style={styles.profileContainer}>
@@ -191,7 +192,7 @@ const HomeScreen = ({ navigation }) => {
                 style={[
                   styles.currUserItem,
                   {
-                    backgroundColor: "#990000",
+                    backgroundColor: "#565656",
                   },
                 ]}
               >
