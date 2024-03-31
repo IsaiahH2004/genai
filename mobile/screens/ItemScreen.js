@@ -7,20 +7,19 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import { useFocusEffect } from "@react-navigation/native";
 
 const ItemScreen = ({ route, navigation }) => {
-  const [storedName, setStoredName] = useState('');
+  const [storedName, setStoredName] = useState("");
   const [items, setItems] = useState([]);
-  const [storedId, setStoredId] = useState('');
+  const [storedId, setStoredId] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load stored name
     const loadStoredName = async () => {
       const name = await AsyncStorage.getItem("Name");
       if (name) {
@@ -31,7 +30,6 @@ const ItemScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    // Load stored ID
     const loadStoredId = async () => {
       const id = await AsyncStorage.getItem("UserID");
       if (id) {
@@ -44,7 +42,9 @@ const ItemScreen = ({ route, navigation }) => {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/items/${storedId}`);
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SERVER_URL}/items/${storedId}`
+      );
       if (!response.ok) {
         console.log("Server failed:", response.status);
         return;
@@ -58,58 +58,63 @@ const ItemScreen = ({ route, navigation }) => {
     }
   };
 
-  // Use useFocusEffect to fetch items every time the screen is focused
   useFocusEffect(
     React.useCallback(() => {
-      fetchItems(); // Call fetchItems directly if it's not changing.
-    }, []) // Ensure dependencies are correct.
+      fetchItems();
+    }, [])
   );
 
   return (
     <SafeAreaView style={styles.containerM}>
-    <View style={styles.container}>
-    <View style={styles.header}>
-            <Text style={styles.disposeText}>Dispose</Text>
-            <View style={styles.profileContainer}>
-              {/* Display the stored name or "Guest" if not available */}
-              <Text style={styles.profileName}>{storedName}</Text>
-              <Ionicons name="person-circle" size={40} color="black" />
-            </View>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.disposeText}>Dispose</Text>
+          <View style={styles.profileContainer}>
+            <Text style={styles.profileName}>{storedName}</Text>
+            <Ionicons name="person-circle" size={40} color="black" />
           </View>
+        </View>
 
-      <ScrollView style={styles.list}>
-        {loading ? (
-          <ActivityIndicator color={"red"} size="large" />
-        ) : (
-          items.slice().reverse().map((item, index) => (
-            <View key={index}>
-              <TouchableOpacity
-                style={styles.item}
-                onPress={() => {
-                  navigation.navigate("CheckList", { id: item._id });
-                }}
-              >
-                <View style={styles.itemContainer}>
-                  <View style={styles.textContainter}>
-                    <Text style={styles.text}>{item.name}</Text>
-                  </View>
-                  {item.isComplete === false ? (
-                    <View style={styles.incomplete}>
-                      <Ionicons name="close" size={28} color={"red"} />
+        <ScrollView style={styles.list}>
+          {loading ? (
+            <ActivityIndicator color={"red"} size="large" />
+          ) : (
+            items
+              .slice()
+              .reverse()
+              .map((item, index) => (
+                <View key={index}>
+                  <TouchableOpacity
+                    style={styles.item}
+                    onPress={() => {
+                      navigation.navigate("CheckList", { id: item._id });
+                    }}
+                  >
+                    <View style={styles.itemContainer}>
+                      <View style={styles.textContainter}>
+                        <Text style={styles.text}>{item.name}</Text>
+                      </View>
+                      {item.isComplete === false ? (
+                        <View style={styles.incomplete}>
+                          <Ionicons name="close" size={28} color={"red"} />
+                        </View>
+                      ) : (
+                        <View style={styles.complete}>
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={28}
+                            color={"#00EB32"}
+                          />
+                        </View>
+                      )}
                     </View>
-                  ) : (
-                    <View style={styles.complete}>
-                       <Ionicons name="checkmark-circle" size={28} color={"#00EB32"} />
-                    </View>
-                  )}
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            </View>
-          ))
-        )}
-      </ScrollView>
-      <StatusBar style="auto" />
-    </View>
+              ))
+          )}
+        </ScrollView>
+        <StatusBar style="auto" />
+      </View>
     </SafeAreaView>
   );
 };
@@ -122,13 +127,12 @@ const styles = StyleSheet.create({
   },
   containerM: {
     flex: 1,
-    backgroundColor: "white"
-
+    backgroundColor: "white",
   },
   text: {
     color: "#ffffff",
     fontSize: 20,
-    alignItems: 'center',
+    alignItems: "center",
     alignContent: "center",
     justifyContent: "center",
     alignItems: "center",
